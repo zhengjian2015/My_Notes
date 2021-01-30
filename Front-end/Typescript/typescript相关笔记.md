@@ -218,9 +218,15 @@ cnpm i -D webpack webpack-cli typescript ts-loader
 
 2.新建webpack.config.js
 
-```json
+```javascript
 //引入一个包
 const path = require("path");
+
+//引入html插件
+const htmlWebpackPlugin = require('html-webpack-plugin');
+
+//引入clen插件 
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 //webpack中的所有配置信息 都应该写在 module.exports 文件中
 module.exports = {
@@ -250,6 +256,21 @@ module.exports = {
 
             }
         ]
+    },
+    
+    //配置webpack的插件
+    plugins: [
+        new CleanWebpackPlugin(),
+        new htmlWebpackPlugin({
+            //title:"这是自定义的title",
+            //设置一个模板
+            template:"./src/index.html"
+        }),
+    ],
+    
+    //用来设置引用模板 否则 export  import {hi} from "./m1" 这种代码会报错
+    resolve: {
+        extensions:{".ts",".js"}
     }
 };
 ```
@@ -269,3 +290,94 @@ module.exports = {
 在src的ts中写些代买
 
 执行命令  npm  run build  来打包
+
+**当想自动生成html文件时**
+
+1.引入插件  cnpm i -D html-webpack-plugin
+
+2.修改webpack.config.js 
+
+3.执行命令 npm run build
+
+**当想有简易服务器时**
+
+1.引入插件 cnpm i -D webpack-dev-server
+
+2.在package.json 的scriptes 加上一句   "start": "webpack serve --open chrome.exe"  (启动服务器并用chrome打开)
+
+3.执行 npm start
+
+**彻底清除dist目录**
+
+1.cnpm i -D clean-webpack-plugin
+
+2.修改webpack.config.js   const 和 plugins 里 new cleanWebpackPlugin(),
+
+
+
+**babel的使用**
+
+为了使老游览器也能使用新标准，ts的target 不够，有时也转不了
+
+1.命令      cnpm  i -D  @babel/core  @babel/preset-env   babel-loader core-js
+
+2.修改webpack.config.j module rules 的 use   
+
+```javascript
+    //指定webpack打包文件时要使用模块
+    module: {
+        //指定要加载的规则
+        rules: [
+            {
+                //test指定的是规则生效的文件
+                test: /\.ts$/,
+                //要使用的loader
+                use: [
+                    //配置babel
+                    {
+                        //指定加载器
+                        loader: "babel-loader",
+                        //设置babel
+                        options: {
+                            //设置预定义的环境
+                            presets: [
+                                [
+                                    //指定环境的插件
+                                    "@babel/preset-env",
+                                    //配置信息
+                                    {
+                                        //要兼容的目标游览器
+                                        targets: {
+                                            "chrome": "88",
+                                            "ie": "11"
+                                        },
+                                        //指出corejs的版本
+                                        "corejs": "3",
+                                        //使用core.js的方式 usage 表示按需加载
+                                        "useBuiltIns": "usage"
+                                    }
+                                ]
+                            ]
+                        }
+                    },
+                    'ts-loader'
+                ],
+                //要排除的文件
+                exclude: /node-modules/
+
+            }
+        ]
+    },
+```
+
+corejs 可以把没有的转成自己的 比如ie11里的 Promise  corejs就会自己实现
+
+同时如果使用ie webpack 默认会用箭头函数，ie里会报错
+
+要改一下  output里加上 
+
+ environment: {
+
+​      arrowFunction: false
+
+​    }
