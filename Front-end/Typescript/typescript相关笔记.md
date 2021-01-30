@@ -150,7 +150,122 @@ let m : myType;
        ],
 	"exclude":[
         "./src/hello/**/*"  
-      ]
+      ],
+	/*
+	"compilerOptions"  编译器的选项 默认编译成es3
+	*/
+	  "compilerOptions": {
+          "target":"ES3",
+          //模块化规范 可以用小技巧如abc来看可选值，
+          "module":"commjs",
+          //lib用来指定项目中要使用的库,一般情况不用改，除非要在nodejs中使用
+          //"lib":[]
+          //outDir 用来指定编译后的目录
+          "outDir":"../dist",
+          //outFile 所有的全局作用域中的代码合并到一个文件中
+          // "outFile":"../dist/app.js",
+          //是否对js文件进行编译，默认是false
+          "allowJs":false,
+          //是否检查js代码是否符合规范,默认是false
+          "checkJs":true,
+          //是否移除注释
+          "removeComments":true,
+          //不生成编译后的文件
+          //"noEmit":true
+          //当有错误时不生成编译后的文件
+          "noEmitOnError":true,
+          //用来设置编译后的文件是否使用严格模式，默认false
+          //ps :有export import 自动进入严格模式
+          "alwaysStrict":false，
+          //不允许隐式的any
+          "noImplicitAny": true,
+          //严格检查空值
+          "strictNullChecks": false,
+          //所有严格检查都打开
+          "strcit":true
+      }
 	}
 ```
 
+```typescript
+//m.ts
+export const hi = "你好";
+
+//demo.ts
+import {hi} from 'm.js'
+console.log(hi);
+
+//tsc来看模块化效果
+
+//严格检查空值
+let box1 = document.getElementById("box1");
+box1?.addEventListener("click",function(){
+
+});
+```
+
+# webpack的使用
+
+npm init -y
+
+//-D 会自动加到config文件上
+
+cnpm i -D webpack webpack-cli typescript ts-loader
+
+如果cnpm 卡主不动 参考这个 https://blog.csdn.net/qq_38409994/article/details/106550877
+
+1.在package.json 的scriptes 加上一句   "build": "webpack"
+
+2.新建webpack.config.js
+
+```json
+//引入一个包
+const path = require("path");
+
+//webpack中的所有配置信息 都应该写在 module.exports 文件中
+module.exports = {
+
+    //指定入口文件  ./是当前 ../是上一层
+    entry: "./src/index.ts",
+
+    //指定打包文件目录
+    output: {
+        //指定打包的目录
+        path: path.resolve(__dirname, 'dist'),
+        //打包后文件的名称
+        filename: "bundle.js"
+    },
+
+    //指定webpack打包文件时要使用模块
+    module: {
+        //指定要加载的规则
+        rules: [
+            {
+                //test指定的是规则生效的文件
+                test: /\.ts$/,
+                //要使用的loader
+                use: 'ts-loader',
+                //要排除的文件
+                exclude: /node-modules/
+
+            }
+        ]
+    }
+};
+```
+
+3.新建 tsconfig.json 
+
+```json
+{
+    "compilerOptions": {
+        "target":"ES6",
+        "module": "ES6",
+        "strict": true
+    }
+}
+```
+
+在src的ts中写些代买
+
+执行命令  npm  run build  来打包
