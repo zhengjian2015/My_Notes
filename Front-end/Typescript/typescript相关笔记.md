@@ -116,6 +116,12 @@ console.log(Student.gender === Gender.Male);
 //type myType  =  1|2|3|4|5;
 let k : 1|2|3|4|5;
 let m : myType;
+
+//null判空
+let box1 = document.getElementById("box1");
+box1?.addEventListener("click",function(){
+    alert(11);
+});
 ```
 
 
@@ -381,3 +387,238 @@ corejs 可以把没有的转成自己的 比如ie11里的 Promise  corejs就会�
 ​      arrowFunction: false
 
 ​    }
+
+
+
+# 面向对象
+
+```typescript
+class Person {
+    //只读
+    readonly name : string = "zhengjian" ;
+
+    static age : number = 18;
+
+    sayHello () {
+        console.log("大家好");
+    }
+
+}
+const per = new Person();
+console.log(per.name);
+console.log(Person.age);
+console.log(per.sayHello);
+
+
+class Dog {
+    name;
+    readonly age;
+    //构造函数
+    constructor(name:string,age:number) {
+        this.name = name;
+        this.age = age;
+    }
+
+    beak() {
+        alert("wang wang");
+    }
+
+}
+
+const dog = new Dog("旺财",1);
+//dog.age = 2;
+console.log(dog);
+```
+
+**关于继承和super**
+
+```typescript
+(function(){
+    //抽象类
+    abstract class Animal {
+        name: string;
+        age: number;
+
+        constructor(name: string) {
+            this.name = name;
+           
+        }
+		//抽象方法
+        abstract beak(): void;
+    }
+
+
+    class Dog extends Animal{
+
+        //如果子类有构造函数，那子类必须对父类的构造函数调用
+        constructor(name: string, age: number) {
+            super(name);
+            this.age = age;
+        }
+
+        run() {
+            console.log("dog is run");
+        }
+
+        //重写
+        beak() {
+            console.log("汪汪汪");
+        }
+    }
+
+    class Cat extends Animal  {
+
+        //如果子类有构造函数，那子类必须对父类的构造函数调用
+        constructor(name: string, age: number) {
+            super(name);
+            this.age = age;
+        }
+        
+         //重写
+         beak() {
+            //console.log("喵喵喵");
+            super.beak();
+        }
+    }
+
+    const dog1 = new Dog("旺财",1);
+
+    const cat1 = new Cat("小苗",2);
+
+    console.log(dog1.beak());
+    console.log(cat1.beak());
+
+
+}()); 
+```
+
+**接口** 
+
+```typescript
+  (function(){
+   
+    //描述一个对象的类型
+    type myType = {
+        name: string,
+        age: number
+    }
+
+    //接口用来定义一个类结构
+    interface myInteface {
+        name: string,
+        age: number
+    }
+
+    const obj: myInteface = {
+        name: "sss",
+        age: 23
+    }
+
+    /**
+     * 接口的所有的属性都不能有实际的值
+     * 接口只定义对象的结构，而不是考虑实际值
+     *      在接口中所有方法都是抽象方法
+     */
+    interface myInter {
+        name: string;
+
+        sayHello():void;
+    }
+
+    /**
+     * 定义类 实现接口中的所有成员
+     */
+    class MyClass implements myInter {
+        name: string;
+
+        constructor(name: string) {
+            this.name = name;
+        }
+
+        sayHello() {
+            console.log("hello");
+        }
+    }
+
+}()); 
+```
+
+**私有属性**
+
+```typescript
+(function(){
+   
+   class Person {
+
+        /**
+         * public 
+         * private
+           protected 子类能访问父类的
+         */
+
+        private _name: string;
+
+        private _age: number;
+
+        constructor(name: string, age: number) {
+            this._name = name;
+            this._age = age;
+        }
+
+        getName() {
+            return this._name;
+        }
+
+        setName(name: string) {
+            this._name = name;
+        }
+       //Ts中的get
+        get name() {
+            return this._name;
+        }
+   }
+
+
+   const per = new Person("zhengjian",30);
+
+   console.log(per.getName());
+
+
+}()); 
+```
+
+泛型
+
+```typescript
+
+//在定义函数和类时，如果遇到类型不明确可以使用泛型
+
+function fn<T>(n:T):T {
+    return n;
+}
+
+function fn2<T,K>(a:T,b:K):T {
+    console.log(b);
+    return a;
+}
+
+fn2<number,string>(123,'hello');
+
+interface Inter {
+    length: number;
+}
+
+function fn3<T extends Inter>(a:T) : number{
+    return a.length;
+}
+
+class MyClass<T> {
+    name: T;
+    constructor(name: T) {
+        this.name = name;
+    }
+}
+
+const mc = new MyClass<string>("myname");
+```
+
