@@ -56,3 +56,16 @@ public class Main extends Application {
 }
 ```
 
+
+
+esclipse关于新加resource
+
+https://www.cnblogs.com/testway/p/5296264.html
+
+
+
+javafx学习 ： https://github.com/AlmasB/WeatherApp/blob/master/src/main/resources/com/almasb/weather/ui.fxml
+
+ps
+
+看vip视频 https://github.com/kedpter/vip-player-plugin
