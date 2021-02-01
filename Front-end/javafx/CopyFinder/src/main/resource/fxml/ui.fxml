@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.copy.cf.Controller">
+   <top>
+      <HBox prefHeight="50.0" prefWidth="400.0" spacing="25.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="labelDirectory" text="Directory:" />
+            <Button mnemonicParsing="false" onAction="#browse" text="Browse..." />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <TreeView fx:id="tree" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+      <HBox prefHeight="30.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="labelError" />
+            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <ProgressIndicator fx:id="progress" progress="0.0" visible="false" />
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>
