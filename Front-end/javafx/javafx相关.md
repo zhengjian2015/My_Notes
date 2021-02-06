@@ -12,6 +12,16 @@ javafx的开源bootstarp的库 https://baijiahao.baidu.com/s?id=1677555457338422
 
 
 
+idea 2019 的激活
+
+https://www.cnblogs.com/fengfengyue/p/12350735.html
+
+激活文件在qq邮箱中 jetbrains jh2.zip
+
+ps: java  0.1+0.2 也不是0.3  理由 0.3二进制表示不了
+
+
+
 demo的例子
 
 ```java
