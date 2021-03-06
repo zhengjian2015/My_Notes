@@ -143,9 +143,21 @@ http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.9/src/
 
 点run后 启动成功 能访问 http://localhost:8080/
 
+整合后的代码放置在qq邮箱中转站
+
 
 
 # 代码分析
+
+激励的话：
+
+​		听源码肯定枯燥和难懂，但是你还得硬着头皮去听。等你听的多，翻源码翻的多了。	
+
+​        等你思考的多了，等你能有自己的架构设计思想，这个时候想去哪就不是问题了。
+
+
+
+Tomcat**初始化**源码分析
 
 tomcat的入口类
 
@@ -153,11 +165,11 @@ org.apache.catalina.startup.Bootstrap.java
 
 静态代码块 ： 
 
-1.设置CatalinaHome  Tomcat安装目录
+1.设置CatalinaHome (Tomcat安装目录)
 
-2.CatalinaHome   Tomcat工作目录
+2.设置CatalinaBase  (Tomcat工作目录)
 
-main函数 
+main函数   4点，序列号的标记大小很重要
 
 ​	1.实例化 Bootstrap
 
@@ -169,36 +181,37 @@ main函数
 
 ​				//反射方法实例化 Catalina
 
-​				Class<?> startupClass =    catalinaLoader.loadClass    ("org.apache.catalina.startup.Catalina");Object 				startupInstance = startupClass.newInstance();
+Class<?> startupClass =    catalinaLoader.loadClass    ("org.apache.catalina.startup.Catalina");                                            Object 	startupInstance = startupClass.newInstance();
 
 ​			（3）引用Catalina实例
 
 ​					catalinaDaemon = startupInstance;
 
-​		
+ 		
 
 ​    3.**daemon.load()**  最主要
 
 ​		反射调度Catalina的load
 
 ```java
+//Bootstrap的main方法
 else if (command.equals("start")) {   
     //执行catalinout的load的方法
 	daemon.setAwait(true);   
-    daemon.load(args);   
+    daemon.load(args);  //代码流转到Catalina.java的load()
     daemon.start();
     }
 ```
 
 ​			Catalina.java  load() 方法
 
-​        (1)定义解析server.xml配置的Digester
+​              (1)定义解析server.xml配置的Digester
 
-​			//定义解析server.xml的配置，告诉Digester哪个xml标签应该解析成什么样
+​			  	  //定义解析server.xml的配置，告诉Digester哪个xml标签应该解析成什么样
 
-​				Digester digester = createStartDigester();
+​					Digester digester = createStartDigester();
 
-​		(2）加载conf/server.xml
+​			(2）加载conf/server.xml
 
 ​						a.先尝试解析conf/server.xml
 
@@ -206,9 +219,9 @@ else if (command.equals("start")) {
 
 ​						c.都没有，直接return
 
-​		 (3) 为server设置了catalina的信息
+​			 (3) 为server设置了catalina的信息
 
-​					catalina的home  catalina的base
+​					 catalina的home  catalina的base
 
 ​			  
 
@@ -234,13 +247,27 @@ else if (command.equals("start")) {
         }
 ```
 
-​		(4)**StandardServer的init的方法**
+​		Load方法中很重要的一件事情，就是调度了Server,然后代码流转到StandardServer的init()	
 
-​				调度的是爷爷的 init方法
+​        (4)**StandardServer的init的方法**
+
+​				StandSever 没有init方法     源码分析调的是爷爷的 init方法
 
 ​				我们通过观察发现LifeCycleBase的initInternal方法是抽象方法，所以交给子类去重写
 
 ​	所以代码就通过多态机制，调度的是子类的initInternal方法，我们再次将执行流程回到StandSever           	initInternal 方法
+
+​				a.往jmx中注册全局的Stringcache
+
+​				b.注册MBeanFactory,用来管理Service
+
+​				c.往jmx中注册全局的NamingResources
+
+​				d.初始化内部的Service
+
+​		在StandardSever 的initInternal方法中，做的最主要的事情是初始化services集合
+
+​		所以代码流转到StandardService的initInternal方法
 
 ​    4.daemon.start
 
