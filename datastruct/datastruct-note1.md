@@ -338,8 +338,9 @@ head 再指向头部
 private Node head;
 private int size;
 
+//这点有点迷惑，当没有虚拟头节点时，head是空
 public LinkedList() {
-    this.head = new Node();
+    this.head = null;
     this.size = 0;
 }
 
@@ -380,6 +381,7 @@ public void add(int index, E e) {
     }
 }
 
+//一个也没插入时，直接输出会报错，插入后，输出链表就不会报错了
 @Override
 public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -390,5 +392,108 @@ public String toString() {
     }
     sb.append("NULL");
     return sb.toString();
+}
+```
+
+
+
+
+
+//下面这个是虚拟头节点的版本
+
+//记住循环一遍只是为了找到要操作节点的位置，或者说前一位置
+
+```java
+private Node dummyHead;
+private int size;
+
+public LinkedList() {
+    this.dummyHead = new Node(null, null);
+    this.size = 0;
+}
+
+public int getSize() {
+    return size;
+}
+
+public boolean isEmpty() {
+    return size == 0;
+}
+
+//在头节点添加
+public void addFirst(E e) {
+   add(0,e);
+}
+
+//在index添加节点
+//链表不常用
+public void add(int index, E e) {
+    if (index < 0 || index > size) {
+        throw new IllegalArgumentException("添加错误");
+    }
+
+    Node prev = dummyHead;
+    for (int i = 0; i < index ; i++) {
+        prev = prev.next;
+    }
+    Node node = new Node(e);
+    node.next = prev.next;
+    prev.next = node;
+    size++;
+
+}
+
+//获得当前节点的值
+//在链表中不是一个常用的操作
+public E get(int index) {
+    if (index < 0 || index > size) {
+        throw new IllegalArgumentException("get错误");
+    }
+    //获取时要从实际有的值出发寻找
+    Node cur = dummyHead.next;
+    for(int i=0;i<index;i++) {
+        cur = cur.next;
+    }
+    return cur.e;
+}
+
+@Override
+public String toString() {
+    StringBuilder sb = new StringBuilder();
+    Node cur = dummyHead.next;
+    for(int i=0;i<size;i++) {
+        sb.append(cur.e + "->");
+        cur = cur.next;
+    }
+    /*while (cur != null) {
+        sb.append(cur.e + "->");
+        cur = cur.next;
+    }*/
+    sb.append("NULL");
+    return sb.toString();
+}
+```
+
+
+
+```java
+//删除节点
+ /**
+     * 删除节点常见的错误 cur = cur.next;
+     * 主要原因还是对引用概念糊涂，除了基本数据类型外，其他类型的=都是指向
+     * @param index
+     */
+public void delete(int index) {
+    if (index < 0 || index > size) {
+        throw new IllegalArgumentException("删除错误");
+    }
+    Node prev = dummyHead;
+    for(int i=0;i<index;i++) {
+        prev = prev.next;
+    }
+    Node delete = prev.next;
+    prev.next = delete.next;
+    delete.next = null;
+    size--;
 }
 ```
