@@ -483,7 +483,7 @@ public String toString() {
      * 主要原因还是对引用概念糊涂，除了基本数据类型外，其他类型的=都是指向
      * @param index
      */
-public void delete(int index) {
+public E delete(int index) {
     if (index < 0 || index > size) {
         throw new IllegalArgumentException("删除错误");
     }
@@ -495,5 +495,50 @@ public void delete(int index) {
     prev.next = delete.next;
     delete.next = null;
     size--;
+    return delete.e;
 }
+
+ public E deleteFirst() {
+        return delete(0);
+    }
 ```
+
+增，删，查，当头节点时 时间复杂度是o(1) ，想到了栈
+
+所以用链表实现栈
+
+再实现链表的队列
+
+
+
+刷题leetcode 203
+
+
+
+```java
+public ListNode removeElements(ListNode head, int val) {
+    while(head != null && head.val == val) {
+        ListNode delNode = head;
+        head = head.next;
+        delNode.next = null;
+    }
+    
+    if(head == null) {
+        return head;
+    }
+
+    ListNode prev = head;
+    while (prev.next != null ) {
+        if(prev.next.val == val) {
+            ListNode delNode = prev.next;
+            prev.next = delNode.next;
+            delNode.next = null;
+        } else
+            prev = prev.next;
+    }
+    return head;
+}
+
+//第2种方式是虚拟头节点
+```
+
