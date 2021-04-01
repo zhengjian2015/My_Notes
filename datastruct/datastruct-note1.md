@@ -542,3 +542,8 @@ public ListNode removeElements(ListNode head, int val) {
 //第2种方式是虚拟头节点
 ```
 
+StringBuilder 
+
+String 底层+ 是new StringBuilder,但是+断开，就是用分号后
+
+会再new 一个，所以大量的时候用StringBuilder效率高
