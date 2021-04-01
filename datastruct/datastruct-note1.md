@@ -547,3 +547,54 @@ StringBuilder
 String 底层+ 是new StringBuilder,但是+断开，就是用分号后
 
 会再new 一个，所以大量的时候用StringBuilder效率高
+
+
+
+
+
+```java
+	/*
+     * Leetcode的测试用例，可以测试链表
+     */
+public class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode() {
+    }
+
+    ListNode(int val) {
+        this.val = val;
+    }
+
+    ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
+    }
+
+    public ListNode(int[] arr) {
+        if (arr == null || arr.length == 0)
+            throw new IllegalArgumentException("can not be empty");
+        //难理解，为啥cur = this
+        this.val = arr[0];
+        ListNode cur = this;
+        //从1开始输入
+        for (int i = 1; i < arr.length; i++) {
+            cur.next = new ListNode(arr[i]);
+            cur = cur.next;
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder res = new StringBuilder();
+        ListNode cur = this;
+        while (cur != null) {
+            res.append(cur.val + "->");
+            cur = cur.next;
+        }
+        res.append("NULL");
+        return res.toString();
+    }
+}
+```
