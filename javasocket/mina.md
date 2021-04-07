@@ -223,3 +223,24 @@ Hanlder就是我们的业务对象，自定义的handler需要实现IOHandlerAcc
 ![image-20210406230805664](image-20210406230805664.png)
 
 Iosession：描述的是客户端和服务端连接的描述，常常用于接受和发送数据
+
+
+
+## 4.mina学习之长短连接
+
+像qq这种就是长连接，比较消耗IO资源
+
+http协议，客户端发起http请求，服务器处理，是常见的短连接
+
+想起到面试题，http怎么实现长连接  ，应该是keep-alive
+
+
+
+改造mina的长连接为短连接， 注释掉
+
+ if("exit".equals(msg)) {
+            session.closeNow();
+        }  
+
+在messageSent 下写 session.closeNow();
+
