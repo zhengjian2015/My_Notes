@@ -598,3 +598,47 @@ public class ListNode {
     }
 }
 ```
+
+
+
+# 5.递归
+
+本质上将原来的问题，转化为更小的问题
+
+数组求和
+
+```java
+/**
+ * sum[n] = n+sum[n-1]
+ */
+public class Sum {
+
+    public static int sum(int[] arr) {
+        return sum(arr,0);
+    }
+
+    //计算arr[l..n)这个区间内所有数字和
+    private static int sum(int[] arr,int l) {
+        if(l == arr.length)
+            return 0;
+        return arr[l] + sum(arr,l+1);
+    }
+
+    public static void main(String[] args) {
+        int[] a = {8,2,3,4};
+        System.out.println(sum(a));
+    }
+}
+```
+
+递归两步：1.求解最基本问题 2.把原问题转化成更小的问题（关键，比较难）
+
+想法：摈弃掉自己调自己的想法，就把它想成a调b函数，别老想着如何调用自己
+
+
+
+![image-20210408224830573](image-20210408224830573.png)
+
+用链表的思想解决删除指定元素
+
+![image-20210408230128282](image-20210408230128282.png)
