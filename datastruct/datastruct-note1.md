@@ -642,3 +642,86 @@ public class Sum {
 用链表的思想解决删除指定元素
 
 ![image-20210408230128282](image-20210408230128282.png)
+
+
+
+递归实现删除某元素
+
+```java
+public class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+        if(head == null) {
+            return null;
+        }
+        ListNode res = removeElements(head.next,val);
+        if(head.val == val) {
+            return res;
+        } else {
+            head.next = res;
+            return head;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {3,4,3,1};
+        ListNode head = new ListNode(nums);
+        System.out.println(head);
+        ListNode head2 = new Solution2().removeElements(head,3);
+        System.out.println(head2);
+    }
+}
+```
+
+
+
+调式递归代码
+
+```java
+public class Solution2 {
+    public ListNode removeElements(ListNode head, int val, int depth) {
+
+        String depthString = generateDepathString(depth);
+
+        System.out.print(depthString);
+        System.out.println("call:remove " + val + " in " + head);
+
+        if (head == null) {
+            System.out.print(depthString);
+            System.out.println("Return: " + head);
+            return null;
+        }
+
+        ListNode res = removeElements(head.next, val, depth + 1);
+        System.out.print(depthString);
+        System.out.println("After remove " + val + ":" + res);
+
+        ListNode ret;
+        if (head.val == val) {
+            ret = res;
+        } else {
+            head.next = res;
+            ret = head;
+        }
+
+        System.out.print(depthString);
+        System.out.println("Return: " + ret);
+        return ret;
+    }
+
+    private String generateDepathString(int depth) {
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            res.append("--");
+        }
+        return res.toString();
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {3, 4, 3, 1};
+        ListNode head = new ListNode(nums);
+        System.out.println(head);
+        ListNode head2 = new Solution2().removeElements(head, 3,0);
+        System.out.println(head2);
+    }
+}
+```
