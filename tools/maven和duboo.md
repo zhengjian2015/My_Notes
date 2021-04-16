@@ -169,7 +169,7 @@ dubbo官方推荐的服务注册中心
 
 zookeeper是树形结构的
 
-![image-20200913185746737](C:\Users\zhengj\AppData\Roaming\Typora\typora-user-images\image-20200913185746737.png)
+![image-20200913185746737](image-20200913185746737.png)
 
 
 
@@ -203,7 +203,7 @@ https://gitee.com/zhengj2015/dubbodemo-cousmer
 
 ### dubbo思考题
 
-![image-20200914205939049](C:\Users\zhengj\AppData\Roaming\Typora\typora-user-images\image-20200914205939049.png)
+![image-20200914205939049](image-20200914205939049.png)
 
 ### dubbo相关配置
 
