@@ -347,6 +347,128 @@ void f() 在传统c中，表示参数未知，并不表示没有参数
 
 
 
+# 数组
+
+```c
+#include <stdio.h>
+
+//0 - 9每个数的出现次数
+int main()
+{
+	const int number = 10;
+	int x;
+	int count[number];
+	int i;
+	
+
+	for(i=0;i<number;i++) {
+		count[i] = 0;
+	}
+	scanf("%d",&x);
+	while(x!=-1) {
+		if(x>=0 && x<=9) {
+			count[x]++;
+		}
+		scanf("%d",&x);
+	}
+	
+	for(i=0;i<number;i++) {
+		printf("%d:%d\n",i,count[i]);
+	}
+	return 0;
+
+} 
+```
+
+
+
+# 指针
+
+```c
+int main()
+{
+ 	int i = 0;
+ 	int p;
+ 	p = (int)&i;
+ 	printf("0x%x\n",p);
+ 	printf("%p\n",&i);
+ 	printf("%lu\n",sizeof(int));
+ 	printf("%lu\n",sizeof(&i));
+
+	return 0;
+
+} 
+//地址和整数并不永远相同，和架构是有关的
+```
+
+```c
+int main()
+{
+ 	int i = 0;
+ 	int p;
+ 	printf("%p\n",&i);
+ 	printf("%p\n",&p);
+	return 0;
+} 
+//相差了4位 刚好是sizeof(int) 并且先定义的在上面
+
+```
+
+![image-20210418222323163](image-20210418222323163.png)
+
+```c
+int* p,q 
+
+int *p,q  
+
+意思是*p是 int,if want to q is point;
+int* p,*q;
+```
+
+```c
+
+
+#include <stdio.h>
+
+void f(int *p);
+void g(int k);
+
+int main(void)
+{
+ 	int i = 6;
+ 	printf("&i=%p\n",&i);
+ 	f(&i);
+ 	g(i);
+ 	
+
+	return 0;
+
+} 
+
+void f(int *p)
+{
+	printf("p=%p\n",p);
+	printf("*p=%d\n",*p);
+	*p=26; //改变了*p 所指向
+}
+
+void g(int k)
+{
+	printf("k=%d\n",k);
+}
+*p是值，不是变量 在左边叫左值，右边是右值
+```
+
+
+
+<img src="image-20210417232512209.png" alt="image-20210417232512209" style="zoom: 25%;" />
+
+下图 是上边代码的解释， p存贮了i的地址
+
+当scanf 不写 &时 编译不报错，是因为scanf认为传进来的数字就是地址，运行报错是因为传进来的地址太小了
+
+那个地方存储了很重要的东西
+
 
 
 #include <stdio.h>
