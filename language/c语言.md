@@ -53,6 +53,8 @@ int main()
 
 unix中 可以用 gcc hello.c 来编译 如若不指定，则生成a.out 文件
 
+gcc hello.c -o hello    ./hello
+
 ./a.out  则会执行   ./是unix为了安全的手段，保证当前目录和系统重名的文件不会被执行
 
 # 变量
@@ -104,9 +106,252 @@ printf("%f\n",10.0/3);
 
 
 
+## 递增递减
+
+```c
+int main()
+{
+	int a;
+	a = 10;
+	printf("a++=%d\n",a++);
+	printf("a=%d\n",a);
+
+	printf("++a=%d\n",++a);
+	printf("a=%d\n",a);
+
+} 
+```
+
+
+
+0长得像cita是因为电报，和o区分开来
+
+
+
+# 数据类型
+
+p61--68
+
+![image-20210417232512204](image-20210417232512204.png)
+
+![image-20210417233612730](image-20210417233612730.png)
+
+
+
+sizeof 能看出类型 在内存中占据几个字节
+
+
+
+```c
+int main()
+{
+	int a;
+	a = 10;
+	printf("sizeof(int)=%ld\n",sizeof(int));
+	printf("sizeof(a)=%ld\n",sizeof(a));
+	printf("sizeof(double)=%ld\n",sizeof(double));
+	printf("sizeof(double)=%ld\n",sizeof(long double));
+	printf("sizeof(a)=%ld\n",sizeof(a++));
+	
+
+	printf("a=%d\n",a);
+	
+	return 0;
+}
+```
+
+上面的例子发现 a 打印的值还是 10， 说明 sizeof是静态编译后定的
+
+
+
+sizeof  后整数发现
+
+char:1字节(8比特)
+
+short:2字节
+
+int:取决于编译器(CPU),通常的意义是“1个字"
+
+long:取决于编译器(CPU),通常的意义是"1个字"
+
+long long：8字节
+
+
+
+字长的意思就是寄存器是多少宽的  reg是寄存器  ram内存
+
+!(image-20210418000536518.png)
+
+![image-20210418000839893](image-20210418000839893.png)
+
+寄存器上一次能处理的数据是32bit,总线一次能传输的数据是32bit  所以是字长
+
+不同的平台不同的CPU 字长是不同的
+
+一个int表达的是一个寄存器的大小
+
+比int小的可能表达是几个位，比int大的可能是几个寄存器拼起来的
+
+
+
+补码的意义是待溢出和原来相加有个待溢出的数
+
+
+
+```c
 #include <stdio.h>
 
-int main(void)
+int main()
+{
+	char c = 255;
+	int i = 255;
+	printf("c=%d,i=%d\n",c,i);
+	//11111111
+	//00000000 00000000 00000000 11111111
+	return 0;
+} 
+
+//为什么c是-1，原因就是最高位当成补码
+```
+
+![img](SQ84%T57N60H0H1X4PTS7`0.png)
+
+如果希望不用补码，即没有负数，就可以用unsigned 来表示
+
+```c
+int main()
+{
+	unsigned char c = 255;
+	int i = 255;
+	printf("c=%d,i=%d\n",c,i);
+    
+    char c1 = -128;
+    c1 = c1 -1
+	printf("c1=%d,i=%d\n",c1,i);
+	return 0;
+} 
+
+
+```
+
+
+
+![image-20210418004209586](image-20210418004209586.png)
+
+
+
+```c
+int main()
+{
+	int a=0,b=0;
+	while(++a>0)
+	;
+	printf("int表达的最大值是%d\n",a-1);
+
+	b++;
+	while((a=a/10)!=0) 
+	{
+		b++;
+	}
+	printf("int数据类型最大的数的数位是:%d",b);
+	return 0;
+
+} 
+```
+
+## 如何选择整数类型
+
+
+
+![image-20210418010433831](image-20210418010433831.png)
+
+double和float的区别是   double精度更准一些
+
+他们的范围是 double 2.2*10-308   float 1.2*10-38
+
+靠近0的中间有很小一段是没法表达的 如下图
+
+![image-20210418000839834](image-20210418000839834.png)
+
+
+
+
+
+printf("%.3f\n",b);   //保留三位小数
+
+
+
+![img](GSBN9N2LYPR2XW36OR%HJDC.png)
+
+如果没有特殊需求，选择doble 就好，现在的cpu能直接对double做硬件运算
+
+char是一种整数，也是一种特殊的类型：字符，  用单引号的字符面：'a','1'
+
+用字符时用 c, 输出数字时用 d
+
+当运算时， char -> int ->float ->double   会自动转换为范围更大的
+
+printf 对于任何小于int 的类型会被转换成int,float会被转换成 double
+
+但是scanf不会，要输入short,需要%hd
+
+强制类型转换    (int)3249 ， 但注意要安全隐患
+
+
+
+# 函数
+
+c语言中 函数需要先声明再调用，
+
+因此要先在前面声明下   也可以直接写在顶部
+
+类型不匹配 ： 
+
+​	调用函数类型与参数类型可以不匹配，编译器悄悄把你转好，这是最大的漏洞
+
+​	后续的C++/Java 在这方面很严格
+
+
+
+```c
+#include <stdio.h>
+
+void swap(int a,int b);
+
+int main()
+{
+	int a = 3;
+	int b = 5;
+	
+	swap(a,b);
+	
+	printf("a=%d b=%d\n",a,b);
+	
+	return 0;
+
+} 
+
+void swap(int a,int b) 
+{
+	int t = b;
+	b = a;
+	a = t;
+}
+
+//说明c语言在函数传递中是值传递
+```
+
+void f(void)  不传任何参数
+
+void f() 在传统c中，表示参数未知，并不表示没有参数
+
+
+
+
+
+#include <stdio.h>
+
+int main(void)补
 {ub
 	char ac[] = {1,2,3,4,5,6,7,};
 	char *p = ac;
