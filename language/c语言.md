@@ -471,23 +471,6 @@ void g(int k)
 
 
 
-#include <stdio.h>
-
-int main(void)补
-{ub
-	char ac[] = {1,2,3,4,5,6,7,};
-	char *p = ac;
-	printf("p = %p\n",p);
-	printf("p+1 = %p\n",p+1);
-	int ai[] = {1,2,3,4,5,6,7,};
-	int *q = ai;
-	int *q1 = &ai[5];
-	printf("q = %p\n",q);
-	printf("q+1 = %p\n",q+1);
-	printf("q1-q = %d\n",q1 - q); //得到的是 a[5]/sizeof(int)
-	return 0;
-} 
-
 #遍历数组的两种方法
 
 ```c
@@ -515,7 +498,70 @@ NULL是一个预定义的符号，表示0地址
 
 
 
+指针应用场景
 
+1.交换变量
+
+2.返回最大值，最小值
+
+3.返回0 -1 代替异常处理机制
+
+c里面没有异常处理机制，可以用指针来返回异常信息
+
+
+
+## 传入函数的数组成了什么
+
+```c
+
+#include <stdio.h>
+
+void minmax( int a[], int len, int *min, int *max );
+
+
+int main( void )
+{
+	int	a[] = { 3, 9, 2, 4, 55, 100, 88, 77, 45 };
+	int	min, max;
+	printf("main sizeof(a)=%lu\n",sizeof(a));
+	printf("main a=%p\n",a);
+	minmax( a, sizeof(a) / sizeof(a[0]), &min, &max );
+	printf("a[0]=%d\n",a[0]);
+	printf("min=%d,max=%d\n", min, max );
+	return(0);
+}
+
+void minmax( int a[], int len, int *min, int *max )
+{
+	int i;
+	printf("minmax sizeof(a)=%lu\n",sizeof(a));
+	printf("minmax a=%p\n",a);
+	*min = *max = a[0];
+	a[0] = 1000;
+	for ( i = 1; i < len; i++ ) {
+		if ( *min > a[i] ) {
+			*min = a[i];
+		}
+		if ( *max < a[i] ) {
+			*max = a[i];
+		}
+	}
+}
+```
+
+函数参数表中的数组实际上是指针
+
+数组变量是特殊的指针
+
+int a[10]; int *p = a;无需用&取地址
+
+a == &a[0];
+
+int  a[]  <===> int *const a
+
+数组是常量指针  所以数组变量不能再赋值
+
+## 
 
 
 
