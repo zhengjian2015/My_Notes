@@ -528,6 +528,10 @@ int main( void )
 	minmax( a, sizeof(a) / sizeof(a[0]), &min, &max );
 	printf("a[0]=%d\n",a[0]);
 	printf("min=%d,max=%d\n", min, max );
+    int *p = &min;
+	printf("*p=%d\n",*p);
+	printf("p[0]=%d\n",p[0]);
+	printf("*a=%d\n",*a);
 	return(0);
 }
 
@@ -559,11 +563,79 @@ a == &a[0];
 
 int  a[]  <===> int *const a
 
-数组是常量指针  所以数组变量不能再赋值
+数组是常量指针  所以数组变量不能再被赋值
 
-## 
+表示不能通过这个指针去修改那个变量  并不能使得那个变量成为const
+
+const int* p = &i;
+
+*p=26 //ERROR, *p是 const
+
+i=26 //OK
+
+p = &j; //OK
+
+总结：
+
+int i;
+
+const int* p1 = &i;  //const所指的东西不能被修改
+
+int const* p2 = &i; //同上
+
+int *const p3 = &i; //指针不能被修改
+
+判断那个被const了的标志是 const在*的前面还是后面
+
+## 指针的运算
+
+```c
+
+int main( void )
+{
+	char ac[] = {1,2,3,4,5,6};
+	char *p = ac;
+	printf("p   = %p\n",p);
+	printf("p+1 = %p\n",p+1);
+
+	int ai[] = {1,2,3,4,5,6};
+	int *q = ai;
+	printf("q   = %p\n",q);
+	printf("q+1 = %p\n",q+1);
+	return(0);
+
+} 
+```
+
+可以看出  p+1  得到的是 sizeof(变量[0])   
+
+同时推理出  *(p+n) <---> ac[n]
+
+```c
+int main( void )
+{
+	char ac[] = {1,2,3,4,5,6};
+	char *p = ac;
+	char *p1 = &ac[5];
+	printf("p1-p = %d\n",p1-p);
+	
+
+	int ai[] = {1,2,3,4,5,6};
+	int *q = &ai[0];
+	int *q1 = &ai[5];
+	printf("q1-q = %d\n",q1-q);
+	return(0);
+
+}
+
+//得出 指针-指针 = (地址差)/sizeof(ai[0])
+```
+
+*p++在部分机器上能翻译成机器指令
 
 
+
+## 动态分配内存
 
 ```c
 #include <stdio.h>
@@ -611,112 +683,21 @@ int main(void)
 
 
 
+# 字符串
 
+ char[] word = {'H','l','l','o','\0'};
 
-```java
-/**
- * 简易对答程序Server
- * 
- */
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+以0 整数0 结尾的一串字符
 
-public class TalkSever {
-	public static void main(String[] args) {
-		try {
-			ServerSocket server = null;
-			try {
-				server = new ServerSocket(4700);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.out.println("can not listen:" + e);
-			}
-			Socket socket = null;
+0 或 '0' 是一样的，但是和’0‘不同
 
-			try {
-				socket = server.accept();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.out.println("Error:" + e);
-			}
-	
-			String line;
-			// 缓冲区
-			BufferedReader is = new BufferedReader(new 			    InputStreamReader(socket.getInputStream()));
-			PrintWriter os = new PrintWriter(socket.getOutputStream());
-			BufferedReader sin = new BufferedReader(new InputStreamReader(System.in));
-			// 如果客户端没有输入，这个方法就阻塞了
-			System.out.println("client:" + is.readLine());
-			line = sin.readLine();
-			// 这个循环表明客户端和服务端必须一人说一句
-			while (!"bye".equals(line)) {
-				// 把服务端键盘的输入写到客户端去
-				os.println(line);
-				os.flush();
-				System.out.println("sever:" + line);
-				System.out.println("Client:" + is.readLine());
-				line = sin.readLine();
-			}
-			is.close();
-			os.close();
-			socket.close();
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-			System.out.println("Errorex:" + ex);
-		}
-	}
+0标志字符串的结束，但它不是字符串的一部分
 
-}
+计算字符串长度的时候不包含这个0
 
+字符串以数组的形式存在，以数组或指针的形式访问
 
-```
+更多是以指针形式访问
 
-
-
-```java
-/**
- * 简易对答程序Client
- * 
- */
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-
-public class TalkClient {
-	public static void main(String[] args) {
-		try {
-			Socket socket = new Socket("127.0.0.1", 4700);
-			BufferedReader sin = new BufferedReader(new InputStreamReader(System.in));
-			PrintWriter os = new PrintWriter(socket.getOutputStream());
-			BufferedReader is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			String readLine;
-			readLine = sin.readLine();
-			while (!"bye".equals(readLine)) {
-				// 把客户端键盘的输入写到服务端去
-				os.println(readLine);
-				os.flush();
-				System.out.println("Client:" + readLine);
-				System.out.println("Server:" + is.readLine());
-				readLine = sin.readLine();
-			}
-			is.close();
-			os.close();
-			socket.close();
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-			System.out.println("Errorex:" + ex);
-		}
-	}
-}
-```
+string.h 里很多处理字符串的函数
 
