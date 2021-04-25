@@ -701,3 +701,170 @@ int main(void)
 
 string.h 里很多处理字符串的函数
 
+
+
+```c
+
+
+int main( void )
+{	
+	int i = 0; 
+	char *s = "Hello World";
+	//s[0] = 'B';
+	char *s2 = "Hello World";
+	
+
+	printf("&i=%p\n",&i);
+	printf("s=%p\n",s);
+	printf("s2=%p\n",s2);
+	//printf("Here is s[0]=%c\n",s[0]);
+	return 0;
+
+}
+```
+
+上面的代码 s[0] 无法输出，是因为，指针指向了一个很小的地方，叫做只读代码块
+
+char *s = "Hello,World";   其实是 const char* *s = "Hello,World" 只是编译器接收不带const 写法
+
+要想改变  char s[] = "Hello,World";
+
+数组：作为本地变量空间自动被回收
+
+指针：这个字符串不知道在哪里， 处理参数，动态分配空间 
+
+如果要构造一个字符串用数组，处理一个字符串用指针
+
+char* s 不一定是字符串，只有字符数组结尾是0。才能说指向字符串
+
+## 输入输出
+
+```c
+
+
+int main( void )
+{	
+	char word[8];
+	scanf("%s",word);
+	printf("%s###\n",word);
+	return 0;
+}
+```
+
+scanf读入一个单词（到空格，tab或回车为止）
+
+scanf是不安全的，因为不知道要读入的内容的长度
+
+安全的方法是  提前告诉最大数字     scanf("%7s",word);  
+
+如果 定义为  char *wrod;   没有对word 初始化为0；所以可能会报错
+
+
+
+## 字符串数组
+
+```c
+char a[][10]  或者 char* a[];
+
+虽然都是字符数组，但是表达内容是不相同的
+```
+
+![image-20210425225526335](image-20210425225526335.png)
+
+用二维字符数组解决月份问题
+
+```c
+#include <stdio.h>
+
+int main( void )
+{	
+	printf("输入月份:");
+	int month;
+	scanf("%d",&month);
+	 
+	char a[][12] = {
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December"
+	};
+	printf("%s\n",a[month-1]);
+	return 0;
+
+}
+
+
+```
+
+```c
+
+//可以通过知道，程序是怎么执行这个应用的
+//参考busybox
+#include <stdio.h>
+
+int main(int argc,char const *argv[] )
+{	
+	int i;
+	for( i=0;i<argv;i++) {
+		printf("%d:%s\n",i,argv[i]);
+	}
+	return 0;
+}
+```
+
+
+
+## getchar和putchar
+
+```c
+#include <stdio.h>
+
+int main( void )
+{	
+	int ch;
+	while((ch = getchar()) != EOF ) {
+		putchar(ch);
+	}  
+	printf("EOF\n"); 
+	return 0;
+}
+
+//windows中是通过输入的ctr+Z 来结束
+```
+
+![image-20210425224952655](image-20210425224952655.png)
+
+
+
+## strlen函数
+
+```c
+
+#include <stdio.h>
+
+size_t mylen(const char* s) {
+	int idex = 0;
+	while(s[idex] != '\0') {
+		idex++;
+	}
+	return idex;
+}
+
+int main(int argc,char const *argv[] )
+{	
+	char line[] = "Hello";
+	printf("strlen=%lu\n",mylen(line));
+	printf("strlen=%lu\n",strlen(line));
+	printf("strlof=%lu\n",sizeof(line));
+	return 0;
+}
+```
+
