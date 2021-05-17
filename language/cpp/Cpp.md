@@ -562,3 +562,158 @@ int main()
 }
 ```
 
+
+
+## 结构体
+
+结构体三种方式
+
+```c++
+#include<iostream>
+#include "string"
+using namespace std;
+
+struct Student 
+{
+	string name;
+	int age;
+	int score;
+} s3; 
+
+
+int main()
+{	
+
+	struct Student s1;
+	s1.name = "郑健";
+	s1.age = 29;
+	s1.score = 70;
+	cout << "姓名:" << s1.name << " 年龄:" << s1.age << " 分数:" << s1.score << endl;
+	
+	struct Student s2 = {
+		"王琳娜",32,75
+	};
+	cout << "姓名:" << s2.name << " 年龄:" << s2.age << " 分数:" << s2.score << endl;
+	
+    //第三种方式不常用
+	s3.name = "郑健";
+	s3.age = 29;
+	s3.score = 70;
+	cout << "姓名:" << s3.name << " 年龄:" << s3.age << " 分数:" << s3.score << endl;
+
+}
+```
+
+
+
+结构体数组
+
+```c++
+#include<iostream>
+#include "string"
+using namespace std;
+
+struct Student 
+{
+	string name;
+	int age;
+	int score;
+}; 
+
+int main()
+{	
+
+	struct Student arr[3] = 
+	{
+		{"王琳娜",32,75},
+		{"张森森",28,77},
+		{"徐艺玮",28,79}
+	};
+	for(int i=0;i<3;i++) {
+		struct Student s3 = arr[i];
+		cout << "姓名:" << s3.name << " 年龄:" << s3.age << " 分数:" << s3.score << endl;
+	} 
+
+}
+```
+
+
+
+结构体指针
+
+```c++
+#include<iostream>
+#include "string"
+using namespace std;
+
+struct student 
+{
+	string name;
+	int age;
+	int score;
+}; 
+
+
+int main()
+{	
+	//可以省略struct 
+	student s1 = {"张三",100,129 };
+
+	student *p = &s1;
+	cout << "姓名:" << p->name << " 年龄:" << p->age << " 分数:" << p->score << endl;
+
+}
+```
+
+结构体中含结构体
+
+先定义子结构体
+
+可以 t.stu.age 来访问 子结构体的属性
+
+
+
+结构体的值传递和地址传递
+
+```c++
+#include<iostream>
+#include "string"
+using namespace std;
+
+struct student 
+{
+	string name;
+	int age;
+	int score;
+}; 
+
+void printStudent1(struct student s1)
+{
+	s1.age = 20; 
+	cout << "子函数打印:姓名:" << s1.name << " 年龄:" << s1.age << " 分数:" << s1.score << endl;
+
+}
+
+
+void printStudent2(struct student* p)
+{
+	p->age = 20; 
+	cout << "姓名:" << p->name << " 年龄:" << p->age << " 分数:" << p->score << endl;
+
+}
+
+int main()
+{	
+	//可以省略struct 
+	student s1 = {"张三",100,129 };
+	//值传递 
+	//printStudent1(s1); 
+
+	//地址传递
+	student *p = &s1;
+	printStudent2(p);
+	
+	cout << "主函数打印:姓名:" << s1.name << " 年龄:" << s1.age << " 分数:" << s1.score << endl;
+}
+```
+
