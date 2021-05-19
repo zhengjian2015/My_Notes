@@ -694,10 +694,10 @@ void printStudent1(struct student s1)
 
 }
 
-
-void printStudent2(struct student* p)
+//将函数中的形参改为指针，可以减少内存空间，而且不会复制新的副本出来
+void printStudent2(const struct student* p)
 {
-	p->age = 20; 
+	//p->age = 20;  //加入const之后，一旦有修改的操作就会报错，可以防止我们的误操作
 	cout << "姓名:" << p->name << " 年龄:" << p->age << " 分数:" << p->score << endl;
 
 }
@@ -708,12 +708,80 @@ int main()
 	student s1 = {"张三",100,129 };
 	//值传递 
 	//printStudent1(s1); 
-
 	//地址传递
 	student *p = &s1;
 	printStudent2(p);
 	
 	cout << "主函数打印:姓名:" << s1.name << " 年龄:" << s1.age << " 分数:" << s1.score << endl;
+}
+```
+
+
+
+### 结构体案例1
+
+```c++
+#include<iostream>
+#include<stdlib.h>
+#include <string>
+#include <ctime>
+using namespace std;
+
+struct student 
+{
+	string name;
+	int score;
+}; 
+
+
+struct Teacher 
+{
+	//姓名
+	string tName;
+	//学生
+	struct student sArray[5];
+	 
+};
+
+//给老师和学生赋值 
+void allocateSpace(struct Teacher tArray[],int len)
+{
+	string nameSeed = "ABCDE";
+	for(int i=0;i<len;i++) {
+		tArray[i].tName = "Teacher_";
+		tArray[i].tName += nameSeed[i];
+		for(int j=0;j<5;j++) {
+			tArray[i].sArray[j].name="Student_";
+			tArray[i].sArray[j].name+=nameSeed[j];
+			int random = rand()%61 + 40; 
+			tArray[i].sArray[j].score = random;
+		}
+		
+	}
+}
+
+
+void printInfo(struct Teacher tArray[],int len)
+{
+	for(int i=0; i<len; i++) {
+		cout << "老师名字：" << tArray[i].tName << endl;
+		
+		for(int j=0; j<5; j++) {
+			cout << "\t学生名字：" << tArray[i].sArray[j].name << 
+					"考试分数" << tArray[i].sArray[j].score << endl;
+		}
+	}
+
+}
+
+int main()
+{	
+	//随机种子
+	srand((unsigned int)time(NULL));
+	struct Teacher tArray[3];
+	int len = sizeof(tArray) / sizeof(tArray[0]);
+	allocateSpace(tArray,len); 
+	printInfo(tArray,len);
 }
 ```
 
