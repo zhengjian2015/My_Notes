@@ -785,3 +785,62 @@ int main()
 }
 ```
 
+### 结构体案例2
+
+```c++
+#include<iostream>
+#include <string>
+using namespace std;
+
+struct Hero 
+{
+	string name;
+	int age;
+	string sex;
+}; 
+
+void bubbleSort(struct Hero hArray[],int len)
+{
+	for(int i=0; i<len; i++) {
+		for(int j=0;j<len-1-i;j++) {
+			if(hArray[j].age > hArray[j+1].age) {
+				struct Hero temp = hArray[j];
+				hArray[j] = hArray[j+1];
+			 	hArray[j+1] = temp;
+			}
+		}
+	}
+
+}
+void printInfo(struct Hero hArray[],int len)
+{
+	for(int i=0; i<len; i++) {
+		cout <<  hArray[i].name << ":" << hArray[i].age << endl;
+	}
+
+}
+
+
+
+int main()
+{	
+	//随机种子
+	struct Hero hArray[] = 
+	{
+		{"曹操",20,"男"},
+		{"关羽",29,"男"},
+		{"赵云",22,"男"},
+		{"张飞",23,"男"},
+		{"刘备",44,"男"},
+	};
+	int len = sizeof(hArray) / sizeof(hArray[0]);
+	bubbleSort(hArray,len); 
+	printInfo(hArray,len);
+}
+```
+
+
+
+基础课到p85 ,后面是核心课
+
+https://www.bilibili.com/video/BV1et411b73Z?p=71&t=1
