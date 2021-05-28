@@ -222,3 +222,38 @@ public class Test {
     }
 ```
 
+![Q111](Q111.png)
+
+三个小圆点来判断前中后
+
+前序遍历 第一个小圆点变量 就取值
+
+中序遍历 第二个小圆点变量 就取值
+
+后序遍历 第三个小圆点变量 就取值
+
+
+
+**非递归实现前序遍历**
+
+```java
+//前序遍历非递归实现
+//非递归就是自己模拟系统栈，所以要用栈这种数据结构
+public void preOrderNR() {
+    Stack<Node> stack = new Stack<>();
+    stack.push(root);
+    while (!stack.isEmpty()) {
+        Node cur = stack.pop();
+        System.out.println(cur.e);
+        if (cur.right != null)
+            stack.push(cur.right);
+        if (cur.left != null)
+            stack.push(cur.left);
+    }
+}
+```
+
+二分搜索树的前序遍历 就是 $\textcolor{Red}{深度优先遍历} $   ，其实中序，后序也是深度
+
+税友面试失分题，深度优先遍历应该借助栈这种数据结构
+
