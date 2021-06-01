@@ -95,19 +95,24 @@ public class BST<E extends Comparable<E>> {
 判断是否存在 和 前序遍历，以及打印
 
 ```java
-//查找二分搜索树中是否有某种元素，利用递归查找
-    private boolean contain(Node node, E e) {
+    public boolean contains(E e) {
+        return contains(root,e);
+    }
+    
+    //查找二分搜索树中是否有某种元素，利用递归查找
+    private boolean contains(Node node, E e) {
         if (node == null) {
             return false;
         }
         if (e.compareTo(node.e) == 0) {
             return true;
         } else if (e.compareTo(node.e) < 0) {
-            return contain(node.left, e);
+            return contains(node.left, e);
         } else { //e.compareTo(node.e) > 0
-            return contain(node.right, e);
+            return contains(node.right, e);
         }
     }
+
 
     //前序遍历
     public void preOrder() {
@@ -256,4 +261,388 @@ public void preOrderNR() {
 二分搜索树的前序遍历 就是 $\textcolor{Red}{深度优先遍历} $   ，其实中序，后序也是深度
 
 税友面试失分题，深度优先遍历应该借助栈这种数据结构
+
+层序遍历就是 $\textcolor{Red}{广度优先遍历} $   需要借助队列这种数据结构
+
+```java
+    //层序遍历，也就是广度优先遍历
+    //要借助队列这一数据结构
+    public void levelOrder() {
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            Node cur = queue.remove();
+            System.out.println(cur.e);
+            if(cur.left !=null)
+                queue.add(cur.left);
+            if(cur.right !=null)
+                queue.add(cur.right);
+        }
+    }
+```
+
+二分搜索树的最小值 和 最大值
+
+并且删除掉最小元素，当它有右节点时，需要把上一左节点删掉并拼接回右子树
+
+```java
+
+    //找出二分搜索树的最小值，思路，右子树一路走到底
+    public E minimum() {
+        if(size == 0) {
+            throw new IllegalArgumentException("bst is empty");
+        }
+        return minimum(root).e;
+    }
+
+    private Node minimum(Node node) {
+        if(node.left == null) {
+            return node;
+        }
+        return minimum(node.left);
+    }
+
+
+    //找出二分搜索树的最大值，思路，左子树一路走到底
+    public E maximum() {
+        if(size == 0) {
+            throw new IllegalArgumentException("bst is empty");
+        }
+        return maximum(root).e;
+    }
+
+    private Node maximum(Node node) {
+        if(node.right == null) {
+            return node;
+        }
+        return maximum(node.right);
+    }
+
+    //从二分搜索树中删除最小值所在节点，返回最小值
+    public E removeMin() {
+        E ret = minimum();
+        root = removeMin(root);
+        return ret;
+    }
+	**********这段比较难理解*********************************
+    //删除掉以node为根的二分搜索树的最小节点
+    //返回删除节点后新的二分搜索树的根
+    private Node removeMin(Node node) {
+        if(node.left == null) {
+            Node rightNode = node.right;
+            node.right = null;
+            size--;
+            return rightNode;
+        }
+        //删除左子树对应的最小值，并且返回回去
+        node.left = removeMin(node.left);
+        return node;
+    }
+    **********要多看看*********************************
+
+    //从二分搜索树中删除最大值所在节点，返回最大值
+    public E removeMax() {
+        E ret = maximum();
+        root = removeMax(root);
+        return ret;
+    }
+
+    //删除掉以node为根的二分搜索树的最小节点
+    //返回删除节点后新的二分搜索树的根
+    private Node removeMax(Node node) {
+        if(node.right == null) {
+            Node leftNode = node.left;
+            node.left = null;
+            size--;
+            return leftNode;
+        }
+        //删除右子树对应的最小值，并且返回回去
+        node.right = removeMin(node.right);
+        return node;
+    }
+```
+
+测试用例
+
+```java
+public class Test2 {
+    public static void main(String[] args) {
+        BST<Integer> bst = new BST<>();
+        Random random = new Random();
+        for (int i = 0; i < 1000; i++) {
+            bst.add(random.nextInt(10000));
+        }
+
+        List<Integer> nums = new ArrayList<>();
+        while (bst.size() != 0)
+            nums.add(bst.removeMin());
+        System.out.println(nums);
+        for (int i = 0; i < nums.size() - 1; i++) {
+            if (nums.get(i) > nums.get(i + 1)) {
+                throw new IllegalArgumentException("testerror");
+            }
+        }
+        System.out.println("test pass");
+    }
+}
+```
+
+
+
+**删除任意元素**
+
+当要删除的元素 左右都有孩子时，找到这个元素的比它大（或者小），但差值最小的元素，
+
+改元素替换要删除的元素，同时左节点是删除的原来左节点，右节点是最小值
+
+
+
+```java
+//从二分搜索树中删除最大值所在节点，返回最大值
+    public E removeMax() {
+        E ret = maximum();
+        root = removeMax(root);
+        return ret;
+    }
+
+    //删除掉以node为根的二分搜索树的最小节点
+    //返回删除节点后新的二分搜索树的根
+    private Node removeMax(Node node) {
+        if (node.right == null) {
+            Node leftNode = node.left;
+            node.left = null;
+            size--;
+            return leftNode;
+        }
+        //删除右子树对应的最小值，并且返回回去
+        node.right = removeMin(node.right);
+        return node;
+    }
+
+    //删除节点 e
+    public void remove(E e) {
+        root = remove(root, e);
+    }
+
+    //删除该节点并返回删除后的根节点
+    private Node remove(Node node, E e) {
+        if (node == null) {
+            return null;
+        }
+
+        if (e.compareTo(node.e) < 0) {
+            node.left = remove(node.left, e);
+            return node;
+        } else if (e.compareTo(node.e) > 0) {
+            node.right = remove(node.right, e);
+            return node;
+        } else { // e == node.e
+            //删除右节点为空的情况
+            if (node.right == null) {
+                Node leftNode = node.left;
+                node.left = null;
+                size--;
+                return leftNode;
+            }
+            //删除左节点为空的情况
+            if (node.left == null) {
+                Node rightNode = node.right;
+                node.right = null;
+                size--;
+                return rightNode;
+            }
+            //删除左右节点都不为空的情况
+            //找到比删除节点大的最小节点
+            //用这个节点顶替待删除节点的位置
+            Node successor = minimum(node.left);
+            successor.left = node.left;
+            //右节点是删除点successor的整根树，而不是某个节点
+            //这样便于理解，否则会陷入右节点是自己的思维陷阱
+            //removeMin返回是一棵树而不是一个节点
+            successor.right = removeMin(node.left);
+            node.left = node.right = null;
+            return successor;
+        }
+    }
+
+```
+
+
+
+感悟是 递归中 return 就是拼接的步骤，递归真是思维的难点啊
+
+
+
+leetcode真题，可以在原来的之上再加个方法，求最大深度
+
+```java
+    //二分搜索树的最大深度 来自leetcode真题
+    public int maxDepth() {
+        int depth = maxDepth(root);
+        return depth;
+    }
+
+    private int maxDepth(Node node) {
+        if(node == null) {
+            return 0;
+        }
+        return Math.max(maxDepth(node.left),maxDepth(node.right))+1;
+    }
+```
+
+
+
+# 集合
+
+## 基于二分搜索树
+
+```java
+public interface Set<E extends Comparable>  {
+
+    void add(E e);
+
+    void remove(E e);
+
+    boolean contains(E e);
+
+    int getSize();
+
+    boolean isEmpty();
+
+}
+
+```
+
+```java
+public class BSTSet<E extends Comparable<E>> implements Set<E> {
+
+    private BST<E> bst;
+
+    public BSTSet() {
+        bst = new BST<>();
+    }
+
+    @Override
+    public void add(E e) {
+        bst.add(e);
+    }
+
+    @Override
+    public void remove(E e) {
+        bst.remove(e);
+    }
+
+    @Override
+    public boolean contains(E e) {
+        return bst.contains(e);
+    }
+
+    @Override
+    public int getSize() {
+        return bst.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return bst.isEmpty();
+    }
+}
+```
+
+测试用例
+
+```java
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Locale;
+import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+
+// 文件相关操作
+public class FileOperation {
+
+    // 读取文件名称为filename中的内容，并将其中包含的所有词语放进words中
+    public static boolean readFile(String filename, ArrayList<String> words){
+
+        if (filename == null || words == null){
+            System.out.println("filename is null or words is null");
+            return false;
+        }
+
+        // 文件读取
+        Scanner scanner;
+
+        try {
+            File file = new File(filename);
+            if(file.exists()){
+                FileInputStream fis = new FileInputStream(file);
+                scanner = new Scanner(new BufferedInputStream(fis), "UTF-8");
+                scanner.useLocale(Locale.ENGLISH);
+            }
+            else
+                return false;
+        }
+        catch(IOException ioe){
+            System.out.println("Cannot open " + filename);
+            return false;
+        }
+
+        // 简单分词
+        // 这个分词方式相对简陋, 没有考虑很多文本处理中的特殊问题
+        // 在这里只做demo展示用
+        if (scanner.hasNextLine()) {
+
+            String contents = scanner.useDelimiter("\\A").next();
+
+            int start = firstCharacterIndex(contents, 0);
+            for (int i = start + 1; i <= contents.length(); )
+                if (i == contents.length() || !Character.isLetter(contents.charAt(i))) {
+                    String word = contents.substring(start, i).toLowerCase();
+                    words.add(word);
+                    start = firstCharacterIndex(contents, i);
+                    i = start + 1;
+                } else
+                    i++;
+        }
+
+        return true;
+    }
+
+    // 寻找字符串s中，从start的位置开始的第一个字母字符的位置
+    private static int firstCharacterIndex(String s, int start){
+
+        for( int i = start ; i < s.length() ; i ++ )
+            if( Character.isLetter(s.charAt(i)) )
+                return i;
+        return s.length();
+    }
+}
+
+```
+
+```java
+public class Test4 {
+    public static void main(String[] args) {
+		
+        System.out.println("Pride and Prejudice");
+
+        ArrayList<String> words1 = new ArrayList<>();
+        //txt放src外面
+        if(FileOperation.readFile("pride-and-prejudice.txt", words1)) {
+            System.out.println("Total words: " + words1.size());
+
+            BSTSet<String> set1 = new BSTSet<>();
+            for (String word : words1)
+                set1.add(word);
+            System.out.println("Total different words: " + set1.getSize());
+        }
+
+        System.out.println();
+
+    }
+}
+
+```
 
