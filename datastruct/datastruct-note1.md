@@ -425,6 +425,18 @@ public void addFirst(E e) {
    add(0,e);
 }
 
+// 查找链表中是否有元素e
+    public boolean contains(E e){
+        Node cur = dummyHead.next;
+        while(cur != null){
+            if(cur.e.equals(e))
+                return true;
+            cur = cur.next;
+        }
+        return false;
+    }
+
+
 //在index添加节点
 //链表不常用
 public void add(int index, E e) {
@@ -497,6 +509,24 @@ public E delete(int index) {
     size--;
     return delete.e;
 }
+
+    // 从链表中删除元素e
+    public void removeElement(E e){
+
+        Node prev = dummyHead;
+        while(prev.next != null){
+            if(prev.next.e.equals(e))
+                break;
+            prev = prev.next;
+        }
+
+        if(prev.next != null){
+            Node delNode = prev.next;
+            prev.next = delNode.next;
+            delNode.next = null;
+            size --;
+        }
+    }
 
  public E deleteFirst() {
         return delete(0);

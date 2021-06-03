@@ -646,3 +646,50 @@ public class Test4 {
 
 ```
 
+
+
+BST 和 LinkedList 都是动态数据结构
+
+## 基于链表
+
+```java
+import com.linkedlist.LinkedList;
+
+public class LinkedListSet<E extends Comparable> implements Set<E>{
+
+    public LinkedListSet() {
+        this.list = new LinkedList<>();
+    }
+
+    private LinkedList<E> list;
+
+
+    @Override
+    public void add(E e) {
+        if(!list.contains(e))
+            list.addFirst(e);
+    }
+
+    @Override
+    public void remove(E e) {
+        list.removeElement(e);
+    }
+
+    @Override
+    public boolean contains(E e) {
+        return list.contains(e);
+    }
+
+    @Override
+    public int getSize() {
+        return list.getSize();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
+}
+
+```
+
