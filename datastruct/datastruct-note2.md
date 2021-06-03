@@ -693,3 +693,50 @@ public class LinkedListSet<E extends Comparable> implements Set<E>{
 
 ```
 
+
+
+## 测试用例
+
+```java
+public class Main {
+
+    private static double testSet(Set<String> set, String filename){
+
+        long startTime = System.nanoTime();
+
+        System.out.println(filename);
+        ArrayList<String> words = new ArrayList<>();
+        if(FileOperation.readFile(filename, words)) {
+            System.out.println("Total words: " + words.size());
+
+            for (String word : words)
+                set.add(word);
+            System.out.println("Total different words: " + set.getSize());
+        }
+        long endTime = System.nanoTime();
+
+        return (endTime - startTime) / 1000000000.0;
+    }
+
+    public static void main(String[] args) {
+
+        String filename = "pride-and-prejudice.txt";
+
+        BSTSet<String> bstSet = new BSTSet<>();
+        double time1 = testSet(bstSet, filename);
+        System.out.println("BST Set: " + time1 + " s");
+
+        System.out.println();
+
+        LinkedListSet<String> linkedListSet = new LinkedListSet<>();
+        double time2 = testSet(linkedListSet, filename);
+        System.out.println("Linked List Set: " + time2 + " s");
+
+    }
+}
+```
+
+**结论： BST 是 O(logN)        LinkedList 是O(N)**  
+
+但是二分搜索树 最坏情况就可能是链表  当1,2,3,4,5...顺序存的时候，这时就需要平衡二叉树
+
