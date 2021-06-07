@@ -740,3 +740,42 @@ public class Main {
 
 但是二分搜索树 最坏情况就可能是链表  当1,2,3,4,5...顺序存的时候，这时就需要平衡二叉树
 
+
+
+# 映射Map
+
+python 里 是dict
+
+```java
+public interface Map<K,V> {
+
+    void add(K key,V value);
+    V remove(K key);
+    boolean contains(K key);
+    V get(K key);
+    void set(K key,V newValue);
+    int getSize();
+    boolean isEmpty();
+}
+
+```
+
+
+
+## 基于链表实现Map
+
+
+
+
+
+
+
+## 基于二分搜索树实现Map
+
+
+
+
+
+## 时间复杂度分析
+
+![image-20210608060822159](image-20210608060822159.png)

@@ -755,3 +755,9 @@ public class Solution2 {
     }
 }
 ```
+
+
+
+LeetCode 反转链表，感觉遍历一次简单点
+
+不用递归，重点是 记录下一节点，
