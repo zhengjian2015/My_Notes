@@ -1,6 +1,8 @@
 # 最大堆
 
-定义： 完全二叉树，每排节点是满的，且父节点大于等于子节点
+## 定义
+
+​	完全二叉树，每排节点是满的，且父节点大于等于子节点
 
 ![image-20210609025908205](image-20210609025908205.png)
 
@@ -70,7 +72,7 @@ public class MaxHeap<E extends Comparable<E>> {
     }
 ```
 
-添加和 取出最大元素
+## 添加和取出最大元素
 
 ```java
     //向堆中添加元素，sift up
@@ -105,17 +107,20 @@ public class MaxHeap<E extends Comparable<E>> {
         return ret;
     }
 
-    private void siftDown(int k) {
-        while (leftChild(k) < data.getSize()) {
-            int j = leftChild(k);
-            if (j + 1 < data.getSize() && data.get(j + 1).compareTo(data.get(j)) > 0) {
-                j = rightChild(k);
-                //data[j]是leftChild和rightChild中的最大值
-                if (data.get(k).compareTo(data.get(j)) >= 0)
-                    break;
-                data.swap(k, j);
-                k = j;
-            }
+	private void siftDown(int k){
+
+        while(leftChild(k) < data.getSize()){
+            int j = leftChild(k); // 在此轮循环中,data[k]和data[j]交换位置
+            if( j + 1 < data.getSize() &&
+                    data.get(j + 1).compareTo(data.get(j)) > 0 )
+                j ++;
+            // data[j] 是 leftChild 和 rightChild 中的最大值
+
+            if(data.get(k).compareTo(data.get(j)) >= 0 )
+                break;
+
+            data.swap(k, j);
+            k = j;
         }
     }
 ```
@@ -148,5 +153,107 @@ public class Main {
     }
 }
 
+```
+
+时间复杂度分析， add 和 extractMax 都是 O(logN) 都是树的高度，因为是完全二叉树，所以永远不会退化成链表
+
+
+
+## replace和heapify
+
+
+
+```java
+//取出堆中的最大元素，并且替换成元素e
+public E replace(E e) {
+    E ret = findMax();
+    data.set(0, e);
+    siftDown(0);
+    return ret;
+}
+```
+
+heapify：把任意数组转为最大堆
+
+要从非叶子节点开始，一个个siftdown操作
+
+Array中新增构造方法
+
+```java
+public Array(E[] arr){
+    data = (E[])new Object[arr.length];
+    for(int i = 0 ; i < arr.length ; i ++)
+        data[i] = arr[i];
+    size = arr.length;
+}
+```
+
+```java
+//heapify
+public MaxHeap(E[] arr){
+    data = new Array<>(arr);
+    if(arr.length != 1){
+        for(int i = parent(arr.length - 1) ; i >= 0 ; i --)
+            siftDown(i);
+    }
+}
+```
+
+![image-20210609221033624](image-20210609221033624.png)
+
+heapify的算法复杂度是O(n)      add则是O(NlogN)
+
+
+
+## add和 heapfify的比较
+
+```java
+public class Main {
+
+    private static double testHeap(Integer[] testData, boolean isHeapify){
+
+        long startTime = System.nanoTime();
+
+        MaxHeap<Integer> maxHeap;
+        if(isHeapify)
+            maxHeap = new MaxHeap<>(testData);
+        else{
+            maxHeap = new MaxHeap<>(testData.length);
+            for(int num: testData)
+                maxHeap.add(num);
+        }
+
+        int[] arr = new int[testData.length];
+        for(int i = 0 ; i < testData.length ; i ++)
+            arr[i] = maxHeap.extractMax();
+
+        for(int i = 1 ; i < testData.length ; i ++)
+            if(arr[i-1] < arr[i])
+                throw new IllegalArgumentException("Error");
+        System.out.println("Test MaxHeap completed.");
+
+        long endTime = System.nanoTime();
+
+        return (endTime - startTime) / 1000000000.0;
+    }
+
+    public static void main(String[] args) {
+
+        int n = 1000000;
+
+        Random random = new Random();
+        Integer[] testData1 = new Integer[n];
+        for(int i = 0 ; i < n ; i ++)
+            testData1[i] = random.nextInt(Integer.MAX_VALUE);
+
+        Integer[] testData2 = Arrays.copyOf(testData1, n);
+
+        double time1 = testHeap(testData1, false);
+        System.out.println("Without heapify: " + time1 + " s");
+
+        double time2 = testHeap(testData2, true);
+        System.out.println("With heapify: " + time2 + " s");
+    }
+}
 ```
 
