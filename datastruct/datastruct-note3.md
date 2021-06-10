@@ -257,3 +257,245 @@ public class Main {
 }
 ```
 
+# 优先队列
+
+定义：不是先进先出，而是最大或最小的先出
+
+基于最大堆的队列
+
+```java
+public interface Queue<E>  {
+    int getSize();
+    boolean isEmpty();
+    void enqueue(E e);
+    E dequeue();
+    E getFront();
+}
+```
+
+```java
+
+public class PriorityQueue<E extends Comparable<E>> implements Queue<E> {
+
+    private MaxHeap<E> maxHeap;
+
+    public PriorityQueue() {
+        maxHeap = new MaxHeap<>();
+    }
+
+    @Override
+    public int getSize() {
+        return maxHeap.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return maxHeap.isEmpty();
+    }
+
+    @Override
+    public E getFront() {
+        return maxHeap.findMax();
+    }
+
+    @Override
+    public void enqueue(E e) {
+        maxHeap.add(e);
+    }
+
+    @Override
+    public E dequeue() {
+        return maxHeap.extractMax();
+    }
+}
+
+```
+
+## 经典问题
+
+求10000000 元素中的前100 位
+
+相当于 N个元素中选出前M个
+
+第一想法是排序，快排能做到NlogN,但是 用优先队列，能做到NlogM
+
+如leetcode 347 
+
+java自带的PriorityQueue 主要实现了最小堆
+
+## 解题
+
+```java
+import java.util.*;
+import java.util.PriorityQueue;
+
+public class Soulution {
+
+
+    private static class Freq implements Comparable<Freq> {
+        public int key, freq;
+
+        public Freq(int key, int freq) {
+            this.key = key;
+            this.freq = freq;
+        }
+
+        @Override
+        public int compareTo(Freq another) {
+            if (this.freq < another.freq)
+                return 1;
+            else if (this.freq > another.freq)
+                return -1;
+            else
+                return 0;
+        }
+    }
+
+    public static void main(String[] args) {
+        int k = 2;
+        int[] nums = {4,1,-1,2,-1,2,3};
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                map.put(num, map.get(num) + 1);
+            } else {
+                map.put(num, 1);
+            }
+        }
+        PriorityQueue<Freq> pq = new PriorityQueue<>();
+        for (int key : map.keySet()) {
+            if (pq.size() < k) {
+                pq.add(new Freq(key, map.get(key)));
+            } else if (pq.peek().freq < map.get(key)) {
+                pq.remove();
+                pq.add(new Freq(key, map.get(key)));
+            }
+        }
+
+        int m = 0;
+        int[] res = new int[k];
+        while (!pq.isEmpty()) {
+            res[m] = pq.remove().key;
+            m++;
+        }
+
+    }
+
+}
+
+```
+
+
+
+后面主要探讨了比较器的写法
+
+```java
+import java.util.*;
+import java.util.PriorityQueue;
+
+public class Soulution {
+
+
+    private static class Freq  {
+        public int key, freq;
+
+        public Freq(int key, int freq) {
+            this.key = key;
+            this.freq = freq;
+        }
+    }
+
+    private static class FreqComparator implements Comparator<Freq> {
+
+        @Override
+        public int compare(Freq o1, Freq o2) {
+            return o1.freq - o2.freq;
+        }
+    }
+
+    public static void main(String[] args) {
+        int k = 2;
+        int[] nums = {4,1,-1,2,-1,2,3};
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                map.put(num, map.get(num) + 1);
+            } else {
+                map.put(num, 1);
+            }
+        }
+
+        System.out.println(map);
+        PriorityQueue<Freq> pq = new PriorityQueue<>(new FreqComparator());
+        for (int key : map.keySet()) {
+            if (pq.size() < k) {
+                pq.add(new Freq(key, map.get(key)));
+            } else if (pq.peek().freq < map.get(key)) {
+                pq.remove();
+                pq.add(new Freq(key, map.get(key)));
+            }
+        }
+
+        int m = 0;
+        int[] res = new int[k];
+        while (!pq.isEmpty()) {
+            res[m] = pq.remove().key;
+            m++;
+        }
+
+        System.out.println("0------------");
+        for (int i = 0; i < res.length; i++) {
+            System.out.println(res[i]);
+        }
+
+    }
+
+}
+```
+
+
+
+```java
+import java.util.*;
+import java.util.PriorityQueue;
+
+public class Soulution {
+
+    public static void main(String[] args) {
+        int k = 2;
+        int[] nums = {4, 1, -1, 2, -1, 2, 3};
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (int num : nums) {
+            if (map.containsKey(num)) {
+                map.put(num, map.get(num) + 1);
+            } else {
+                map.put(num, 1);
+            }
+        }
+
+        System.out.println(map);
+        PriorityQueue<Integer> pq = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer a, Integer b) {
+                return map.get(a) - map.get(b);
+            }
+        });
+        //PriorityQueue<Integer> pq = new PriorityQueue<>			(Comparator.comparingInt(map::get));
+        for (int key : map.keySet()) {
+            if (pq.size() < k) {
+                pq.add(key);
+            } else if (map.get(pq.peek()) < map.get(key)) {
+                pq.remove();
+                pq.add(key);
+            }
+        }
+
+        List<Integer> integers = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            integers.add(pq.remove());
+        }
+        System.out.println(integers);
+    }
+
+}
+```
