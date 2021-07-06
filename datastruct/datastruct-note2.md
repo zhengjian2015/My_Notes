@@ -237,6 +237,8 @@ public class Test {
 
 后序遍历 第三个小圆点变量 就取值
 
+中序遍历 顺出是从小到大顺序执行的
+
 
 
 **非递归实现前序遍历**
@@ -487,6 +489,24 @@ leetcode真题，可以在原来的之上再加个方法，求最大深度
             return 0;
         }
         return Math.max(maxDepth(node.left),maxDepth(node.right))+1;
+    }
+
+
+
+    //leetcode 226题，大神被google拒的原因
+    public void invertTree() {
+        invertTree(root);
+    }
+
+    private Node invertTree(Node node) {
+        if(node == null) {
+            return null;
+        }
+        Node right = invertTree(node.right);
+        Node left = invertTree(node.left);
+        node.right = left;
+        node.left = right;
+        return node;
     }
 ```
 

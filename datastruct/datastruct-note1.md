@@ -572,6 +572,27 @@ public ListNode removeElements(ListNode head, int val) {
 //第2种方式是虚拟头节点
 ```
 
+
+
+```java
+public ListNode removeElements(ListNode head, int val) {
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode pre = dummyHead;
+    while (pre.next != null) {
+        if (pre.next.val == val) {
+            pre.next = pre.next.next;
+        } else {
+            pre = pre.next;
+        }
+    }
+    return dummyHead.next;
+}
+
+//心得：设立虚拟头结点，就可以避免头结点的特殊处理了
+//同时要主要返回的是虚拟头结点，因为head完全没处理过
+```
+
 StringBuilder 
 
 String 底层+ 是new StringBuilder,但是+断开，就是用分号后
