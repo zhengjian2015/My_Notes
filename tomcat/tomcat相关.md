@@ -10,11 +10,11 @@ tomcat的源码下载
 
 http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.9/src/
 
-1.下载后解压
+1.下载后解压 （apache-tomcat-8.5.9-src.zip  ），新建个source目录，把zip包解压到该目录下
 
 2.在解压的同级目录新建 catalina-home 
 
-3.在 catalina-home里新建config，webapps文件夹，里面内容来自soucre的同名文件夹  ，新建lib ，logs, temp ,	为空 work里建work\Catalina\localhost   webapps里的再复制过去
+3.在 catalina-home里新建config，webapps文件夹，里面内容来自soucre的同名文件夹  ，新建lib ，logs, temp ,	里面为空，work里建work\Catalina\localhost   webapps里的内容再复制到localhost里面
 
 4.在解压的同级目录创建 pom.xml
 
@@ -39,7 +39,7 @@ http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.9/src/
 </project>
 ```
 
-5.tomcat source目录下新建pom.xml  
+5.在source\apache-tomcat-8.5.9-src 目录下新建pom.xml   内容如下
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -118,28 +118,48 @@ http://archive.apache.org/dist/tomcat/tomcat-8/v8.5.9/src/
 </project>
 ```
 
-6.采坑的地方  ， 1.删除 source里的 test目录。否则在test目录中有错误类会报错
+IDEA打开项目的时候 open source下的pom.xml 就好
+
+
+
+6.  Tomcat8部署采坑的地方  ，
+
+    1.删除source\apache-tomcat-8.5.9-src 里的 test目录。否则在test目录中有错误类会报错
 
 ​		2.配置启动参数
 
--Dcatalina.home=catalina-home -Dcatalina.base=catalina-home
--Djava.endorsed.dirs=catalina-home/lib  -Djava.io.tmpdir=catalina-home/temp
+```xml
+-Dcatalina.home=catalina-home
+-Dcatalina.base=catalina-home
+-Djava.endorsed.dirs=catalina-home/lib  
+-Djava.io.tmpdir=catalina-home/temp
 -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
 -Djava.util.logging.config.file=catalina-home/conf/logging.properties
+```
 
-配置的地方，idea run configurations  新建Application 命名tomcat8
+配置的地方，锤子的地方，点Add Configuation新建***Application*** 命名tomcat8
 
-​		Main class选择  org.apache.catalina.startup.Bootstrap
-
-​		vm options选择上面的
+​		Main class选择  org.apache.catalina.startup.Bootstrapvm options选择上面的
 
 ​		use classpath of module选择tomcat8.5.9
+
+![image-20210707222556615](image-20210707222556615.png)
 
 3. ContextConfig.java 文件的 webConfig();加入以下代码
 
    context.addServletContainerInitializer(new JasperInitializer(), null);
-
-
+   
+   ![image-20210707222936080](image-20210707222936080.png)
+   
+   否则会报错，原因是 Boostrap没有加载 JaperInitailizer 从而无法编译JSP,这在tomcat7是没有这个问题的
+   
+   配置好后运行报错 
+   
+   类似这样“-Djava.endorsed.dirs=D:\working\apache-tomcat-9.0.7\endorsed is not supported. Endorsed standards and standalone APIs
+   
+   原因是上图 JRE 用了11 改成java8 就好了
+   
+   
 
 点run后 启动成功 能访问 http://localhost:8080/
 
@@ -163,15 +183,15 @@ tomcat的入口类
 
 org.apache.catalina.startup.Bootstrap.java
 
-静态代码块 ： 
+***静态代码块 ：*** 
 
 1.设置CatalinaHome (Tomcat安装目录)
 
 2.设置CatalinaBase  (Tomcat工作目录)
 
-main函数   4点，序列号的标记大小很重要
+***main函数***   4点，序列号的标记大小很重要
 
-​	1.实例化 Bootstrap
+​	1.实例化 Bootstrap    Bootstrap  bootstrap = new Bootstrap(); // boostarp是tomcat的入口类
 
 ​	2.初始化 Bootstarp    init()
 

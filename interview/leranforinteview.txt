@@ -1,0 +1,3 @@
+1.为什么重写equals 和 hashcode
+	重写equals是实现业务场景下，实例之间在业务逻辑上是否相等。重写hascode是为了让集合快速判重
+	https://blog.csdn.net/weixin_43404791/article/details/105894580 比如set源码中是先根据hashcode 再根据 equals判重的
