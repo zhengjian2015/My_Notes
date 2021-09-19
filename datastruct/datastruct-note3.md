@@ -979,6 +979,67 @@ Union的并的时间复杂度是 O(h)
 
 
 
+## 第二版
+
+```java
+/**
+ * 第二版主要是 parent
+ * 1 2 3 4 5
+ * 1 2 3 4 5
+ * 初始化时 各个元素都指向它自己，当
+ * 元素 合并时  parent[i] 就是其他元素了， 同时也可能是
+ * 其他元素的父节点
+ * 所以并查集 是孩子 指向父亲 的 树数据结构
+ * 这里用 数组 模拟了 树
+ *
+ * quick uion  时间复杂度上 O(h)  h是树的高度
+ *
+ */
+public class UnionFind2 implements UF {
+
+    private int[] parent;
+
+    public UnionFind2(int size) {
+        parent = new int[size];
+        for (int i = 0; i < size; i++) {
+            parent[i] = i;
+        }
+    }
+
+    private int find(int p) {
+        if (p < 0 || p >= parent.length)
+            throw new IllegalArgumentException("out of bonds");
+
+        while (p != parent[p]) {
+            p = parent[p];
+        }
+        return p;
+    }
+
+    @Override
+    public int getSize() {
+        return 0;
+    }
+
+    @Override
+    public void unionElements(int p, int q) {
+        int pRoot = find(p);
+        int qRoot = find(q);
+        if(pRoot == qRoot)
+            return;
+        //这样的话，不一定是链表，是随机的，有可能上链表
+        parent[pRoot] = qRoot;
+    }
+
+    @Override
+    public boolean isConnected(int p, int q) {
+        return find(p) == find(q);
+    }
+}
+```
+
+
+
 ## 第三版
 
 当极端情况，比如都是1指向2,2指向3， 容易变成链表，此时需要考虑 基于元素的个数来优化
