@@ -1,0 +1,65 @@
+1.全文索引， 聚集索引
+全文索引是用来查找很多文字的大文本字段的，对于
+这种数据， 比 like 效率要高很多很多
+
+2.http://www.zyiz.net/tech/detail-115224.html
+可以发现 mysql 的存储引擎 不支持事物， 你用java或者spring的 @Transactional 是不生效的
+
+
+3. 第4章中  select a,b,c,d,_rowid from z  _rowid可以得到主键的值
+
+Mac中 连接ssh 远程地址 输入密码是 远程服务器的密码
+Datagrip 第一次连接远程数据库 https://www.jianshu.com/p/76f9c3659343
+就是 远程服务器密码和 数据库密码 都要设置
+
+use mytest;
+CREATE TABLE test_bankacc(
+id INT unsigned not null auto_increment,
+name VARCHAR(20),
+card VARCHAR(40),
+money decimal(20,2),
+PRIMARY KEY (`id`)
+);
+
+书中的例子
+use mytest;
+CREATE TABLE a(
+id int not null,
+date date not null
+);
+
+insert into a select null,'2021-09-18';
+
+报错， 可见最新版本的 mariadb默认严格模式
+
+
+select @@sql_mode;
+常用的mode:
+
+    TRADITIONAL：传统模型，要求不允许对非法值做插入操作；
+
+    STRICT_TRANS_TABLES：表示对所有支持事务类型的表做严格约束；
+
+    STRICT_ALL_TABLES：表示对所有表做严格约束；
+
+关于chrome插件 使用
+
+1.下载.ctx拓展程序
+
+2.改名为.zip,并解压出来
+
+3.把解压出来的程序拉去到拓展程序中,重启chrome
+
+
+CREATE TABLE test_bankacc2(
+id INT unsigned not null auto_increment,
+name VARCHAR(20),
+card VARCHAR(40),
+money decimal(20,2),
+PRIMARY KEY (`id`)
+) engine = MyISAM;
+
+试验发现mysqltest 里 只有在
+sql 报错时 才发现 innodb 回滚,myisam不回滚
+把代码 int a = 1/0 加在两句sql中间
+发现 这两个数据库 都是 一样的
